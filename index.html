@@ -1215,21 +1215,25 @@
 
       async function getAccount(key) {
           hapticFeedback('medium');
-          
+      
           if (!confirm('Bạn có chắc muốn nhận tài khoản Netflix cho key này?')) {
               return;
           }
-
+      
           try {
+              const signedData = await signRequest({});   // luôn gửi body, dù rỗng
+      
               const response = await fetch(`${API_URL}/api/account/get/${key}`, {
                   method: 'POST',
                   headers: {
+                      'Content-Type': 'application/json',
                       'Authorization': `Bearer ${currentToken}`
-                  }
+                  },
+                  body: JSON.stringify(signedData)
               });
-
+      
               const data = await response.json();
-
+      
               if (data.success) {
                   showAlert('✅ Nhận tài khoản thành công!', 'success');
                   loadDashboard();
@@ -1240,6 +1244,7 @@
               showAlert('❌ Lỗi kết nối: ' + error.message, 'error', 'NETWORK_ERROR');
           }
       }
+
 
       async function viewAccount(key) {
           hapticFeedback('light');
